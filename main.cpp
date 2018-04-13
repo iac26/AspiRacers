@@ -289,8 +289,8 @@ int main() {
 	modelLoc = glGetUniformLocation(shaderProgram, "model");
 	colorLoc = glGetUniformLocation(shaderProgram, "objectColor");
 	
-	r2.init(glm::vec2(3.9f, 2.5f), M_PI/2, glm::vec3(0.3f, 0.0f, 1.0f));
-	r1.init(glm::vec2(2.5f, 2.5f), M_PI/2, glm::vec3(0.1f, 0.7f, 0.3f));
+	r2.init(glm::vec2(3.9f, 2.5f), M_PI/2, glm::vec3(0.3f, 0.0f, 1.0f), "Blue");
+	r1.init(glm::vec2(2.5f, 2.5f), M_PI/2, glm::vec3(0.1f, 0.7f, 0.3f), "Green");
 	int id = 0;
 	for(int i = 0; i < W1; i++) {
 		w1[i].init(glm::vec2(wall_v[id*2], wall_v[id*2 + 1]), glm::vec2(wall_v[id*2 + 2], wall_v[id*2 + 3]), id);
@@ -352,6 +352,8 @@ int main() {
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+	r1.end();
+	r2.end();
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader); 
 	glfwTerminate();

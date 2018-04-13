@@ -1,5 +1,6 @@
 //robot.cpp
 #include <stdio.h>
+#include <string.h>
 #include "robot.h"
 #include "cst.h"
 
@@ -51,13 +52,20 @@ void Bullet::draw(void) {
 }
 
 
-void Robot::init(glm::vec2 _pos, float _angle, glm::vec3 _color){
+void Robot::init(glm::vec2 _pos, float _angle, glm::vec3 _color, const char * _name){
 	c.init(_pos, 0.5f);
 	angle = _angle;
 	color = _color;
     c.mass = 1.0f;
     c.health = 6000;
     f_spd = F_SPD;
+    l_1 = false; l_2 = false; l_3 = false; l_4 = false;
+    lap = 0;
+    global_pos = 0;
+    first = true;
+    first2 = true;
+    time = 0;
+    strcpy(name, _name);
 }
 
 void Robot::move_forward(void){
@@ -153,7 +161,56 @@ void Robot::update(void) {
 	if(f_spd > F_SPD) {
 		f_spd = F_SPD;
 	}
+	int quad;
+	bool a = c.pos.x < W_WIDTH/2; // left
+	bool b = c.pos.y < W_HEIGHT/2; //lower
+	if(a && b) {
+		l_1 = true;
+		quad = LL;
+	} else if(a && !b) {
+		l_2 = true;
+		quad = UL;
+	} else if(!a && !b) {
+		l_3 = true;
+		quad = UR;
+	} else {
+		l_4 = true;
+		quad = LR;
+	}
+	if(quad == ((global_pos + 1)%4)) {
+		global_pos = quad;
+	}
+	if(first && c.pos.y > 5.0 && c.pos.y < 5.5 && c.pos.x < 5.5) {
+		time = 0;
+		first = false;
+	}
+	if(l_1&&l_2&&l_3&&l_4 && global_pos == 0 && c.pos.y > 5.0 && c.pos.y < 5.5 && c.pos.x < 5.5) {
+		lap++;
+		l_1 = false; l_2 = false; l_3 = false; l_4 = false;
+		printf("[%s] lap %d : %d\n", name, lap, time);
+		if(first2) {
+			top_time = time;
+			average_time = time;
+			first2 = false;
+		} else {
+			if(time < top_time) {
+				top_time = time;
+			}
+			average_time = ((lap-1)*average_time + time)/lap;
+		}
+		time = 0;
+	}
+	
+	
+	time += 1;
     
+}
+
+void Robot::end(void) {
+	printf("\n[%s]\n", name);
+	printf("laps: %d\n", lap);
+	printf("average lap time: %d\n", average_time);
+	printf("top lap time: %d\n\n", top_time);
 }
 
 void collide(Circ * a, Circ * b) {

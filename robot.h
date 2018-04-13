@@ -6,6 +6,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "cst.h"
 
+enum{LL, UL, UR, LR};
+
 class Circ {
 	public:
 	glm::vec2 pos, spd, acc, force;
@@ -40,8 +42,17 @@ class Robot{
 	glm::vec3 color;
 	float angle;
 	float f_spd;
+	int global_pos;
+	int lap;
+	int average_time;
+	int top_time;
+	bool l_1, l_2, l_3, l_4;
+	bool first;
+	bool first2;
+	unsigned int time;
+	char name[20];
     
-	void init(glm::vec2 _pos, float _angle, glm::vec3 _color);
+	void init(glm::vec2 _pos, float _angle, glm::vec3 _color, const char * _name);
 	void move_forward(void);
 	void move_back(void);
 	void move_left(void);
@@ -50,6 +61,7 @@ class Robot{
 	void update(void);
     void walls(void);
     void fire(void);
+    void end(void);
 	
 };
 
